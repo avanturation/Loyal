@@ -91,5 +91,4 @@ curl -X GET "loyalapi.ml/v1/ota?device=Watch5,4"
         "size": 609962832
     },
     ...
-    
-```json
+```
