@@ -8,6 +8,12 @@ Loyal API is simple, fast API for fetching Apple firmwares.
 * Fetching Signed OTAs
 * Fetching not only iDevices but also AirPods, Beats, and Keyboard Accessories
 
+## Rate Limits
+
+You can only send **24 requests** per minute.
+
+Why 24 requests? The answer is [here](https://www.youtube.com/watch?v=iSw5EJUI4Fw).
+
 ## Dependies
 
 * FastAPI (and FastAPI Utils)
