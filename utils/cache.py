@@ -2,8 +2,8 @@ import asyncio
 import datetime
 from contextlib import suppress
 
-from .device import *
-from .model import *
+from .device import TVOSXML, iOSXML, AudioOSXML, WatchOSXML, AudioDevices, Accesories
+from .model import RestoreFirmware, OTAFirmware
 from .request import HTTP
 
 
@@ -66,11 +66,11 @@ class Cache:
 
     def build_ota_url(self):
         audio_url = [
-            f"/com_apple_MobileAsset_MobileAccessoryUpdate_{airpods}_EA/com_apple_MobileAsset_MobileAccessoryUpdate_{airpods}_EA.xml"
+            f"/com_apple_MobileAsset_MobileAccessoryUpdate_{airpods}_EA" * 2 + ".xml"
             for airpods in AudioDevices
         ]
         accessory_url = [
-            f"/com.apple.MobileAsset.MobileAccessoryUpdate.{accessory}/com.apple.MobileAsset.MobileAccessoryUpdate.{accessory}.xml"
+            f"/com.apple.MobileAsset.MobileAccessoryUpdate.{accessory}" * 2 + ".xml"
             for accessory in Accesories
         ]
 
@@ -95,11 +95,10 @@ class Cache:
             iOSXML,
             AudioOSXML,
             WatchOSXML,
-        ]  # gather Apple XMLs
+        ]
 
         raw_plists = [
-            await HTTP.send_request("mesu", asset=asset)
-            for asset in device_urls  # sending request
+            await HTTP.send_request("mesu", asset=asset) for asset in device_urls
         ]
 
         for plist in raw_plists:
@@ -107,9 +106,7 @@ class Cache:
 
             with suppress(Exception):
                 if "AssetType" in plist:
-                    device_type = self.check_type(
-                        plist["AssetType"]
-                    )  # discriminate device type
+                    device_type = self.check_type(plist["AssetType"])
 
                 for raw in plist["Assets"]:
                     firmware_dict = raw
@@ -151,18 +148,13 @@ class Cache:
 
         self.ota_cache = ota_cache
 
-    async def get(self, device: str, type: str):
-        if type == "Restore":
+    async def get(self, device: str, firm_type: str):
+        if firm_type == "Restore":
             return self.restore_cache[device]
 
         return self.ota_cache[device]
 
     async def cache(self, second: float):
         while True:
-            s = datetime.datetime.now()
-            await self.fetch_restore()
-            await self.fetch_ota()
-            f = datetime.datetime.now()
-            print("Caching finished in {f - s}")
-
+            asyncio.gather(self.fetch_restore(), self.fetch_ota())
             await asyncio.sleep(second)

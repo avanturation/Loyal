@@ -27,5 +27,4 @@ class HTTP:
         if dest == "mesu":
             return await cls.mesu_apple(**kwargs)
 
-        elif dest == "itunes":
-            return await cls.itunes_apple()
+        return await cls.itunes_apple()
