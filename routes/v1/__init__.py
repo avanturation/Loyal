@@ -1,5 +1,3 @@
-import asyncio
-
 from utils.cache import Cache
 
 from fastapi_utils.cbv import cbv
@@ -12,9 +10,9 @@ cache = Cache()
 @cbv(router)
 class LoyalRouter:
     @router.get("/restore")
-    async def restore(self, identifier: str):
-        return await cache.get(device=identifier, type="Restore")
+    async def restore(self, device: str):
+        return await cache.get(device, type="Restore")
 
     @router.get("/ota")
-    async def ota(self, identifier: str):
-        return await cache.get(device=identifier, type="OTA")
+    async def ota(self, device: str):
+        return await cache.get(device, type="OTA")

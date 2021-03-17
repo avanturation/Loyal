@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 from contextlib import suppress
 
 from .device import *
@@ -62,7 +63,6 @@ class Cache:
                             )
 
         self.restore_cache = restore_cache
-        print("restore caching finished")
 
     def build_ota_url(self):
         audio_url = [
@@ -78,7 +78,7 @@ class Cache:
 
     def check_type(self, asset_type: str):
         if "MobileAccessoryUpdate" in asset_type:  # Audio or Accessory
-            if asset_type.split(".")[-1] == "EA":  # AirPdos, Beats
+            if asset_type.split(".")[-1] == "EA":  # AirPods, Beats
                 return asset_type.split(".")[-2]
 
             return asset_type.replace(  # Apple Pencil, Folio Keyboard
@@ -89,12 +89,14 @@ class Cache:
 
     async def fetch_ota(self):
         ota_cache = {}
+
         device_urls = self.build_ota_url() + [
             TVOSXML,
             iOSXML,
             AudioOSXML,
             WatchOSXML,
         ]  # gather Apple XMLs
+
         raw_plists = [
             await HTTP.send_request("mesu", asset=asset)
             for asset in device_urls  # sending request
@@ -157,7 +159,10 @@ class Cache:
 
     async def cache(self, second: float):
         while True:
+            s = datetime.datetime.now()
             await self.fetch_restore()
             await self.fetch_ota()
+            f = datetime.datetime.now()
+            print("Caching finished in {f - s}")
 
             await asyncio.sleep(second)
