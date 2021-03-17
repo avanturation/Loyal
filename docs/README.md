@@ -20,6 +20,6 @@ Read on [here](./endpoints.md).
 
 ## Models
 
-Read on [here](./models.md).
+Read on [here](./model.md).
 
 
