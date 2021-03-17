@@ -16,10 +16,10 @@ Loyal API is simple, fast API for fetching Apple firmwares.
 
 ## Endpoints
 
-Read on [here](./docs/endpoints.md).
+Read on [here](./endpoints.md).
 
 ## Models
 
-Read on [here](./docs/models.md).
+Read on [here](./models.md).
 
 
