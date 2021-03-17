@@ -25,28 +25,44 @@ class Cache:
         ]
 
         for plist in raw_plist:
-            device_list = plist["MobileDeviceSoftwareVersionsByVersion"][
-                str(max([int(tmp) for tmp in plist]))
-            ]["MobileDeviceSoftwareVersions"]
+            raw_data = plist["MobileDeviceSoftwareVersionsByVersion"]
+            for index in raw_data:
+                device_list = raw_data[index]["MobileDeviceSoftwareVersions"]
 
-            for device in device_list:
-                firmware_list = device_list[device]
+                for device in device_list:
+                    firmware_list = device_list[device]
 
-                with suppress(Exception):
-                    restore_cache[device] = [
-                        RestoreFirmware(
-                            build_id=firmware_list[build]["Restore"]["BuildVersion"],
-                            docs_url=firmware_list[build]["Restore"][
-                                "DocumentationURL"
-                            ],
-                            sha1=firmware_list[build]["Restore"][["FirmwareSHA1"]],
-                            url=firmware_list[build]["Restore"]["FirmwareURL"],
-                            version=firmware_list[build]["Restore"]["ProductVersion"],
-                        )
-                        for build in firmware_list
-                    ]
+                    for builds in firmware_list:
+                        if (
+                            not builds == "Unknown"
+                            and "Restore" in firmware_list[builds]
+                        ):
+                            firmware = firmware_list[builds]["Restore"]
+                            if not device in restore_cache:
+                                restore_cache[device] = []
+
+                            restore_cache[device].append(
+                                RestoreFirmware(
+                                    build_id=None
+                                    if not "BuildVersion" in firmware
+                                    else firmware["BuildVersion"],
+                                    docs_url=None
+                                    if not "DocumentationURL" in firmware
+                                    else firmware["DocumentationURL"],
+                                    sha1=None
+                                    if not "FirmwareSHA1" in firmware
+                                    else firmware["FirmwareSHA1"],
+                                    url=None
+                                    if not "FirmwareURL" in firmware
+                                    else firmware["FirmwareURL"],
+                                    version=None
+                                    if not "ProductVersion" in firmware
+                                    else firmware["ProductVersion"],
+                                )
+                            )
 
         self.restore_cache = restore_cache
+        print("restore caching finished")
 
     def build_ota_url(self):
         audio_url = [
@@ -87,44 +103,49 @@ class Cache:
         for plist in raw_plists:
             device_type = "Regular"
 
-            if "AssetType" in plist:
-                device_type = self.check_type(
-                    plist["AssetType"]
-                )  # discriminate device type
+            with suppress(Exception):
+                if "AssetType" in plist:
+                    device_type = self.check_type(
+                        plist["AssetType"]
+                    )  # discriminate device type
 
-            for raw in plist["Assets"]:
-                firmware_dict = raw
+                for raw in plist["Assets"]:
+                    firmware_dict = raw
 
-                ota_data = OTAFirmware(
-                    version=None
-                    if not "OSVersion" in firmware_dict
-                    else firmware_dict["OSVersion"],
-                    url=None
-                    if not "__RelativePath" in firmware_dict
-                    else firmware_dict["__BaseURL"] + firmware_dict["__RelativePath"],
-                    build_id=None
-                    if not "Build" in firmware_dict
-                    else firmware_dict["Build"],
-                    release_type=None
-                    if not "SUProductSystemName" in firmware_dict
-                    else firmware_dict["SUProductSystemName"],
-                    size=None
-                    if not "_DownloadSize" in firmware_dict
-                    else firmware_dict["_DownloadSize"],
-                )
+                    ota_data = OTAFirmware(
+                        version=None
+                        if not "OSVersion" in firmware_dict
+                        else firmware_dict["OSVersion"],
+                        url=None
+                        if not "__RelativePath" in firmware_dict
+                        else firmware_dict["__BaseURL"]
+                        + firmware_dict["__RelativePath"],
+                        build_id=None
+                        if not "Build" in firmware_dict
+                        else firmware_dict["Build"],
+                        product_name=None
+                        if not "SUProductSystemName" in firmware_dict
+                        else firmware_dict["SUProductSystemName"],
+                        release_type=None
+                        if not "ReleaseType" in firmware_dict
+                        else firmware_dict["ReleaseType"],
+                        size=None
+                        if not "_DownloadSize" in firmware_dict
+                        else firmware_dict["_DownloadSize"],
+                    )
 
-                if device_type == "Regular":
-                    for device in firmware_dict["SupportedDevices"]:
-                        if not device in ota_cache:
-                            ota_cache[device] = []
+                    if device_type == "Regular":
+                        for device in firmware_dict["SupportedDevices"]:
+                            if not device in ota_cache:
+                                ota_cache[device] = []
 
-                        ota_cache[device].append(ota_data)
+                            ota_cache[device].append(ota_data)
 
-                else:
-                    if not device_type in ota_cache:
-                        ota_cache[device_type] = []
+                    else:
+                        if not device_type in ota_cache:
+                            ota_cache[device_type] = []
 
-                    ota_cache[device_type].append(ota_data)
+                        ota_cache[device_type].append(ota_data)
 
         self.ota_cache = ota_cache
 
@@ -136,6 +157,7 @@ class Cache:
 
     async def cache(self, second: float):
         while True:
-            asyncio.gather(self.fetch_restore(), self.fetch_ota())
+            await self.fetch_restore()
+            await self.fetch_ota()
 
             await asyncio.sleep(second)
