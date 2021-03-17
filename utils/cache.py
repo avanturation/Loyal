@@ -115,10 +115,16 @@ class Cache:
 
                 if device_type == "Regular":
                     for device in firmware_dict["SupportedDevices"]:
-                        ota_cache[device] = ota_data
+                        if not device in ota_cache:
+                            ota_cache[device] = []
+
+                        ota_cache[device].append(ota_data)
 
                 else:
-                    ota_cache[device_type] = ota_data
+                    if not device_type in ota_cache:
+                        ota_cache[device_type] = []
+
+                    ota_cache[device_type].append(ota_data)
 
         self.ota_cache = ota_cache
 

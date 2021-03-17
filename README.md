@@ -1,2 +1,4 @@
 # Loyal
-Apple 뭐시기 API
+
+Fast, Simple API of Apple Firmwares.
+
