@@ -12,9 +12,9 @@ You can check FastAPI docs from [here](http://loyalapi.ml/docs).
 
 ## Rate Limits
 
-You can only send **24 requests** per minute.
+You can only send **240 requests** per minute.
 
-Why 24 requests? The answer is [here](https://www.youtube.com/watch?v=iSw5EJUI4Fw).
+Why 240 requests? The answer is [here](https://www.youtube.com/watch?v=iSw5EJUI4Fw).
 
 ## Dependies
 

@@ -13,11 +13,11 @@ cache = Cache()
 @cbv(router)
 class LoyalRouter:
     @router.get("/restore")
-    @limiter.limit("24/minute")
+    @limiter.limit("240/minute")
     async def restore(self, device: str, request: Request):
         return await cache.get(device, firm_type="Restore")
 
     @router.get("/ota")
-    @limiter.limit("24/minute")
+    @limiter.limit("240/minute")
     async def ota(self, device: str, request: Request):
         return await cache.get(device, firm_type="OTA")
