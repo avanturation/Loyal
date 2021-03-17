@@ -11,8 +11,8 @@ cache = Cache()
 class LoyalRouter:
     @router.get("/restore")
     async def restore(self, device: str):
-        return await cache.get(device, type="Restore")
+        return await cache.get(device, firm_type="Restore")
 
     @router.get("/ota")
     async def ota(self, device: str):
-        return await cache.get(device, type="OTA")
+        return await cache.get(device, firm_type="OTA")

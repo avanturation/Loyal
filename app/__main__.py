@@ -3,7 +3,7 @@ import asyncio
 from fastapi import FastAPI
 from routes import cache, router
 
-app = FastAPI()
+app = FastAPI(title="Loyal")
 
 
 @app.on_event("startup")
