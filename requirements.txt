@@ -1,3 +1,2 @@
-pyapple>=1.0.2
 fastapi[all]
 aiohttp>=3.7.4

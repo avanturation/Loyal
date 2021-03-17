@@ -1,3 +1,15 @@
+WatchOSXML = "/watch/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+
+TVOSXML = (
+    "/tv/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+)
+
+iOSXML = (
+    "/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+)
+
+AudioOSXML = "/audio/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+
 AudioDevices = [
     "A1523",  # AirPods (1st generation)
     "A2032",  # AirPods (2nd generation)
@@ -152,10 +164,27 @@ iPods = ["iPod1,1", "iPod2,1", "iPod3,1", "iPod4,1", "iPod5,1", "iPod7,1", "iPod
 
 Macs = ["Macmini9,1", "MacBookPro17,1", "MacBookAir10,1", "ADP3,2"]
 
-AudioAndTVs = [
-    "AppleTV2,1",
-    "AppleTV3,1",
-    "AppleTV3,2",
-    "AppleTV5,3",
-    "AudioAccessory5,1",
+AppleTVs = ["AppleTV2,1", "AppleTV3,1", "AppleTV3,2", "AppleTV5,3", "AppleTV6,2"]
+
+AppleWatchs = [
+    "Watch1,1",
+    "Watch1,2",
+    "Watch2,3",
+    "Watch2,4",
+    "Watch2,6",
+    "Watch2,7",
+    "Watch3,1",
+    "Watch3,2",
+    "Watch3,3",
+    "Watch3,4",
+    "Watch4,2",
+    "Watch4,1",
+    "Watch4,3",
+    "Watch4,4",
+    "Watch5,1",
+    "Watch5,2",
+    "Watch5,3",
+    "Watch5,4",
 ]
+
+HomePods = ["AudioAccessory1,1", "AudioAccessory1,2", "AudioAccessory5,1"]
