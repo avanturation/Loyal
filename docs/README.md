@@ -5,9 +5,7 @@ Loyal API is simple, fast API for fetching Apple firmwares.
 ## Features
 
 * Fetching Signed IPSWs
-
 * Fetching Signed OTAs
-
 * Fetching not only iDevices but also AirPods, Beats, and Keyboard Accessories
 
 ## Dependies
@@ -18,6 +16,10 @@ Loyal API is simple, fast API for fetching Apple firmwares.
 
 ## Endpoints
 
+Read on [here](./docs/endpoints.md).
 
 ## Models
+
+Read on [here](./docs/models.md).
+
 

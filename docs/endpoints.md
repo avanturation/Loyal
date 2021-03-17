@@ -6,6 +6,8 @@
 
 * Required Parameter: device (string, the identifier of iDevice)
 
+* Returns: List(RestoreFirmware)
+
 #### Example Response
 
 ```bash
@@ -36,6 +38,8 @@ curl -X GET "loyalapi.ml/v1/restore?device=iPhone12,1"
 * Required Parameter: device (string, the identifier of device)
 
 If you are going to get AirPods / Accessories firmware, you **must put these values into parameter**.
+
+* Returns: List(OTAFirmware)
 
 #### AirPods
 
