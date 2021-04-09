@@ -26,12 +26,10 @@ AudioDevices = [
 
 Accesories = [
     "WirelessStylusFirmware",  # Apple Pencil (1st generation)
-    "WirelessStylusFirmware.2",  # Apple Pencil (2nd generation)
-    "WirelessRemoteFirmware",  # Siri Remote
-    "WirelessRemoteFirmware.2",  # Siri Remote (2nd generation)
+    "WirelessStylusFirmware_2",  # Apple Pencil (2nd generation)
     "KeyboardCoverFirmware",  # Smart Keyboard
-    "KeyboardCoverFirmware.4",  # Smart Keyboard Folio (11-inch)
-    "KeyboardCoverFirmware.5",  # Smart Keyboard Folio (12.9-inch)
+    "KeyboardCoverFirmware_4",  # Smart Keyboard Folio (11-inch)
+    "KeyboardCoverFirmware_5",  # Smart Keyboard Folio (12.9-inch)
 ]
 
 T2Chips = [

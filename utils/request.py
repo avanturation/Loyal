@@ -1,6 +1,8 @@
 import plistlib
+import re
 
 import aiohttp
+from xmltodict import parse
 
 MESU_APPLE = "https://mesu.apple.com/assets"
 ITUNES_SERVER = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/com.apple.jingle.appserver.client.MZITunesClientCheck/version"
