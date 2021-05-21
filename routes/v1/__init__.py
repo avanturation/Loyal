@@ -3,15 +3,14 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from utils.cache import Cache
+from routes import cache
 
 limiter = Limiter(key_func=get_remote_address)
 router = InferringRouter()
-cache = Cache()
 
 
 @cbv(router)
-class LoyalRouter:
+class LoyalRouterV1:
     @router.get("/restore")
     @limiter.limit("240/minute")
     async def restore(self, device: str, request: Request):
