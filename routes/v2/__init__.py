@@ -3,7 +3,7 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from routes import cache
+from .. import cache
 from interface import RestoreFirmware, OTAFirmware
 
 from typing import List

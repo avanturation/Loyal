@@ -3,7 +3,7 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from routes import cache
+from .. import cache
 
 limiter = Limiter(key_func=get_remote_address)
 router = InferringRouter()
