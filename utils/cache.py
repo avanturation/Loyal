@@ -1,8 +1,18 @@
 import asyncio
 import datetime
 from contextlib import suppress
+from typing import Tuple
 
-from .device import TVOSXML, Accesories, AudioDevices, AudioOSXML, WatchOSXML, iOSXML
+from .device import (
+    tvOSXML,
+    Accesories,
+    AudioDevices,
+    AudioOSXML,
+    WatchOSXML,
+    iOSXML,
+    iOSDeveloperXML,
+    iOSPublicXML,
+)
 from .model import OTAFirmware, RestoreFirmware
 from .request import HTTP
 
@@ -14,7 +24,7 @@ class Cache:
 
     async def cache_ota(self):
         device_urls = self.build_ota_url() + [
-            TVOSXML,
+            tvOSXML,
             iOSXML,
             AudioOSXML,
             WatchOSXML,
@@ -189,6 +199,15 @@ class Cache:
         ]
 
         return audio_url + accessory_url
+
+    def create_beta_url(self, min: int, max: int) -> Tuple:
+        developer_seed, public_seed = [], []
+
+        for version in range(min, max + 1):
+            developer_seed.append(iOSDeveloperXML.replace("<version>", version))
+            public_seed.append(iOSPublicXML.replace("<version>", version))
+            
+        return (developer_seed, public_seed)
 
     def check_type(self, asset_type: str):
         if "MobileAccessoryUpdate" in asset_type:  # Audio or Accessory

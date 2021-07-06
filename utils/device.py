@@ -1,6 +1,6 @@
 WatchOSXML = "/watch/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
 
-TVOSXML = (
+tvOSXML = (
     "/tv/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
 )
 
@@ -9,6 +9,11 @@ iOSXML = (
 )
 
 AudioOSXML = "/audio/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+
+iOSDeveloperXML = "/iOS<version>DeveloperSeed/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+
+iOSPublicXML = "/iOS<version>PublicSeed/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
+
 
 AudioDevices = [
     "A1523",  # AirPods (1st generation)
