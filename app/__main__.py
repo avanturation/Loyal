@@ -2,7 +2,8 @@ import asyncio
 
 import uvicorn
 from fastapi import FastAPI
-from routes import cache, limiter, router
+from routes import limiter, router
+from utils.cache import cache
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 

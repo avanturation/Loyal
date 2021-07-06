@@ -211,3 +211,6 @@ class Cache:
         while True:
             asyncio.gather(self.cache_restore(), self.cache_ota())
             await asyncio.sleep(second)
+
+
+cache = Cache()
