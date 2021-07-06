@@ -161,11 +161,26 @@ iPads = [
     "iPad11,7",
     "iPad13,1",
     "iPad13,2",
+    "iPad13,4",
+    "iPad13,5",
+    "iPad13,6",
+    "iPad13,7",
+    "iPad13,8",
+    "iPad13,9",
+    "iPad13,10",
+    "iPad13,11",
 ]
 
 iPods = ["iPod1,1", "iPod2,1", "iPod3,1", "iPod4,1", "iPod5,1", "iPod7,1", "iPod9,1"]
 
-Macs = ["Macmini9,1", "MacBookPro17,1", "MacBookAir10,1", "ADP3,2"]
+Macs = [
+    "Macmini9,1",
+    "MacBookPro17,1",
+    "MacBookAir10,1",
+    "ADP3,2",
+    "iMac21,1",
+    "iMac21,2",
+]
 
 AppleTVs = ["AppleTV2,1", "AppleTV3,1", "AppleTV3,2", "AppleTV5,3", "AppleTV6,2"]
 
