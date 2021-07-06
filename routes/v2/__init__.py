@@ -8,14 +8,14 @@ from interface import RestoreFirmware, OTAFirmware
 
 from typing import List
 
-limiter = Limiter(key_func=get_remote_address)
-router = InferringRouter()
+v2_limiter = Limiter(key_func=get_remote_address)
+v2_router = InferringRouter()
 
 
-@cbv(router)
+@cbv(v2_router)
 class LoyalRouterV2:
-    @router.get("/restore", tags=["restore"], response_model=List[RestoreFirmware])
-    @limiter.limit("240/minute")
+    @v2_router.get("/restore", tags=["restore"], response_model=List[RestoreFirmware])
+    @v2_limiter.limit("240/minute")
     async def restore(
         self,
         request: Request,
@@ -25,8 +25,8 @@ class LoyalRouterV2:
     ):
         return await cache.get(device, firm_type="Restore")
 
-    @router.get("/ota", tags=["ota"], response_model=List[OTAFirmware])
-    @limiter.limit("240/minute")
+    @v2_router.get("/ota", tags=["ota"], response_model=List[OTAFirmware])
+    @v2_limiter.limit("240/minute")
     async def ota(
         self,
         request: Request,

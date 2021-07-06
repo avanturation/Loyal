@@ -5,18 +5,18 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from ...utils.cache import cache
 
-limiter = Limiter(key_func=get_remote_address)
-router = InferringRouter()
+v1_limiter = Limiter(key_func=get_remote_address)
+v1_router = InferringRouter()
 
 
-@cbv(router)
+@cbv(v1_router)
 class LoyalRouterV1:
-    @router.get("/restore")
-    @limiter.limit("240/minute")
+    @v1_router.get("/restore")
+    @v1_limiter.limit("240/minute")
     async def restore(self, device: str, request: Request):
         return await cache.get(device, firm_type="Restore")
 
-    @router.get("/ota")
-    @limiter.limit("240/minute")
+    @v1_router.get("/ota")
+    @v1_limiter.limit("240/minute")
     async def ota(self, device: str, request: Request):
         return await cache.get(device, firm_type="OTA")
