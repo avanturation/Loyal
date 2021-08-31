@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
+# These models are for v1 API. - Obsoleted
+
 
 @dataclass
 class RestoreFirmware:
