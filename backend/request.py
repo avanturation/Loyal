@@ -68,3 +68,6 @@ class LoyalRequest(Base):
         data = await resp.text(encoding="utf-8")
 
         return plistlib.loads(bytes(data, encoding="utf-8"))
+
+    async def close_session(self):
+        await self.session.close()
