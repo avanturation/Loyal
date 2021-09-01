@@ -1,27 +1,30 @@
 import asyncio
-import datetime
-from contextlib import suppress
-from typing import Tuple
+from typing import Dict, Tuple
 
-from .device_static import (
-    tvOSXML,
-    Accesories,
-    AudioDevices,
-    AudioOSXML,
-    WatchOSXML,
-    iOSXML,
-    iOSDeveloperXML,
-    iOSPublicXML,
-)
 from interface import OTAFirmware, RestoreFirmware
+
 from .request import LoyalRequest
+
+MDSVBV = "MobileDeviceSoftwareVersionsByVersion"
+MDSV = "MobileDeviceSoftwareVersions"
 
 
 class LoyalBackend:
     def __init__(self) -> None:
         self.restore_cache = {}
         self.ota_cache = {}
+
         self.HTTP = LoyalRequest()
+
+        super().__init__()
+
+    def __filter_keys(self, key) -> str:
+        key = key.lower()
+        key = key.replace("-", "_")
+        return key
+
+    def __lower_keys(self, data) -> Dict:
+        return {self.__filter_keys(key): value for key, value in data.items()}
 
     async def cache_ota(self):
         device_urls = self.build_ota_url()
@@ -74,111 +77,22 @@ class LoyalBackend:
 
         self.ota_cache = ota_cache
 
-    async def cache_restore(self):
-        raw_plist = [
-            await HTTP.send_request("itunes"),
-            await HTTP.send_request(
-                "mesu",
-                asset="/bridgeos/com_apple_bridgeOSIPSW/com_apple_bridgeOSIPSW.xml",
-            ),
-            await HTTP.send_request(
-                "mesu", asset="/macos/com_apple_macOSIPSW/com_apple_macOSIPSW.xml"
-            ),
-        ]
-
+    async def cache_restore(self, plist: Dict):
         restore_cache = {}
 
-        for plist in raw_plist:
-            for index in plist["MobileDeviceSoftwareVersionsByVersion"]:
-                for device in plist["MobileDeviceSoftwareVersionsByVersion"][index][
-                    "MobileDeviceSoftwareVersions"
-                ]:
-                    for builds in plist["MobileDeviceSoftwareVersionsByVersion"][index][
-                        "MobileDeviceSoftwareVersions"
-                    ][device]:
-                        if (
-                            not builds == "Unknown"
-                            and "Restore"
-                            in plist["MobileDeviceSoftwareVersionsByVersion"][index][
-                                "MobileDeviceSoftwareVersions"
-                            ][device][builds]
-                        ):
-                            if not device in restore_cache:
-                                restore_cache[device] = []
+        for v in plist[MDSVBV].values():
+            for idevice in v.values():
+                for identifier, builds in idevice.items():
+                    for build, firmware in builds.items():
 
-                            restore_cache[device].append(
-                                RestoreFirmware(
-                                    build_id=None
-                                    if not "BuildVersion"
-                                    in plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ]
-                                    else plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ][
-                                        "BuildVersion"
-                                    ],
-                                    docs_url=None
-                                    if not "DocumentationURL"
-                                    in plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ]
-                                    else plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ][
-                                        "DocumentationURL"
-                                    ],
-                                    sha1=None
-                                    if not "FirmwareSHA1"
-                                    in plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ]
-                                    else plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ][
-                                        "FirmwareSHA1"
-                                    ],
-                                    url=None
-                                    if not "FirmwareURL"
-                                    in plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ]
-                                    else plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ][
-                                        "FirmwareURL"
-                                    ],
-                                    version=None
-                                    if not "ProductVersion"
-                                    in plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ]
-                                    else plist["MobileDeviceSoftwareVersionsByVersion"][
-                                        index
-                                    ]["MobileDeviceSoftwareVersions"][device][builds][
-                                        "Restore"
-                                    ][
-                                        "ProductVersion"
-                                    ],
-                                )
+                        if "SameAs" in firmware.keys():
+                            restore_cache[identifier][build] = restore_cache[
+                                identifier
+                            ][firmware["SameAs"]]
+
+                        if "Restore" in firmware.keys():
+                            restore_cache[identifier][build] = RestoreFirmware(
+                                **self.__lower_keys(firmware["Restore"])
                             )
 
         self.restore_cache = restore_cache
@@ -214,12 +128,6 @@ class LoyalBackend:
             )
 
         return "Regular"  # iPhone, HomePods, Apple Watch, Apple TV
-
-    async def get(self, device: str, firm_type: str):
-        if firm_type == "Restore":
-            return self.restore_cache[device]
-
-        return self.ota_cache[device]
 
     async def cache(self, second: float):
         while True:

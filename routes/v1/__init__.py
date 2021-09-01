@@ -14,9 +14,9 @@ class LoyalRouterV1:
     @v1_router.get("/restore")
     @v1_limiter.limit("240/minute")
     async def restore(self, device: str, request: Request):
-        return await cache.get(device, firm_type="Restore")
+        return "v1 is now obsolete. Use v2 instead."
 
     @v1_router.get("/ota")
     @v1_limiter.limit("240/minute")
     async def ota(self, device: str, request: Request):
-        return await cache.get(device, firm_type="OTA")
+        return "v1 is now obsolete. Use v2 instead."

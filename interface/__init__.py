@@ -4,11 +4,11 @@ from typing import Optional
 
 @dataclass
 class RestoreFirmware:
-    build_id: Optional[str]
-    docs_url: Optional[str]
-    sha1: Optional[str]
-    url: Optional[str]
-    version: Optional[str]
+    buildversion: Optional[str]
+    productversion: Optional[str]
+    documentationurl: Optional[str]
+    firmwareurl: Optional[str]
+    firmwaresha1: Optional[str]
 
 
 @dataclass
