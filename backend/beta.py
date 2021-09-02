@@ -68,3 +68,25 @@ class BetaHandler:
     def __init__(self) -> None:
         self.HTTP = LoyalRequest()
         super().__init__()
+
+    def __parse_audience(self, audience: str) -> str:
+        # example) ios_version_beta
+        audience = audience.split("_")
+
+        if audience[0] == "ios":
+            return
+
+        return
+
+    async def get_asset(self, asset_type, audience, device, codename):
+        post_data = {
+            "ClientVersion": "2",
+            "AssetType": ASSET_TYPE[asset_type],
+            "AssetAudience": assetAudience,
+            "ProductType": device,
+            "HWModelStr": codename,
+            "ProductVersion": "0",
+            "BuildVersion": "0",
+        }
+
+        response = await self.HTTP.post(GDMF_APPLE, data=post_data)
