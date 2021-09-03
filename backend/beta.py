@@ -1,4 +1,4 @@
-from typing import Literal, runtime_checkable
+from typing import Literal
 from .request import LoyalRequest
 
 GDMF_APPLE = "https://gdmf.apple.com/v2/assets"
@@ -69,24 +69,61 @@ class BetaHandler:
         self.HTTP = LoyalRequest()
         super().__init__()
 
-    def __parse_audience(self, audience: str) -> str:
-        # example) ios_version_beta
-        audience = audience.split("_")
+    def __parse_audience(
+        self,
+        device_type: Literal["iOS", "tvOS", "watchOS", "audioOS", "macOS"],
+        version: str,
+        beta_channel: str,
+    ) -> str:
+        if device_type == "iOS":
+            if isinstance(AUDIENCE_IOS[version], str):
+                return AUDIENCE_IOS[version]
 
-        if audience[0] == "ios":
-            return
+            return AUDIENCE_IOS[version][beta_channel]
 
-        return
+        if device_type == "tvOS":
+            if isinstance(AUDIENCE_TVOS[version], str):
+                return AUDIENCE_TVOS[version]
 
-    async def get_asset(self, asset_type, audience, device, codename):
+            return AUDIENCE_TVOS[version][beta_channel]
+
+        if device_type == "watchOS":
+            if isinstance(AUDIENCE_WATCHOS[version], str):
+                return AUDIENCE_WATCHOS[version]
+
+            return AUDIENCE_WATCHOS[version][beta_channel]
+
+        if device_type == "audioOS":
+            if isinstance(AUDIENCE_AUDIOOS[version], str):
+                return AUDIENCE_AUDIOOS[version]
+
+            return AUDIENCE_AUDIOOS[version][beta_channel]
+
+        if device_type == "macOS":
+            if isinstance(AUDIENCE_MACOS[version], str):
+                return AUDIENCE_MACOS[version]
+
+            return AUDIENCE_MACOS[version][beta_channel]
+
+    async def get_asset(
+        self,
+        asset_type: str,
+        device_type: str,
+        version: str,
+        channel: str,
+        device: str,
+        codename: str,
+    ):
         post_data = {
             "ClientVersion": "2",
             "AssetType": ASSET_TYPE[asset_type],
-            "AssetAudience": assetAudience,
+            "AssetAudience": self.__parse_audience(device_type, version, channel),
             "ProductType": device,
             "HWModelStr": codename,
             "ProductVersion": "0",
             "BuildVersion": "0",
         }
+
+        header = {"Content-Type": "application/json"}
 
         response = await self.HTTP.post(GDMF_APPLE, data=post_data)
