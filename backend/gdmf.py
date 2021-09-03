@@ -1,5 +1,11 @@
-from typing import Literal
-from .request import LoyalRequest
+import asyncio
+from base64 import b64decode
+from json import loads
+from typing import Dict, Literal
+
+from aiohttp import ClientSession, TCPConnector
+
+from request import LoyalRequest
 
 GDMF_APPLE = "https://gdmf.apple.com/v2/assets"
 
@@ -64,10 +70,20 @@ AUDIENCE_MACOS = {
 }
 
 
-class BetaHandler:
+class GDMFHandler:
     def __init__(self) -> None:
         self.HTTP = LoyalRequest()
         super().__init__()
+
+    def __decode_gdmf(self, res) -> Dict:
+        res = res.split(".")
+
+        b64 = res[1].replace("-", "+").replace("_", "/")
+        b64 += "=" * (len(b64) % 4)
+
+        dict_str = b64decode(b64).decode("ascii")
+
+        return loads(dict_str)
 
     def __parse_audience(
         self,
@@ -124,6 +140,40 @@ class BetaHandler:
             "BuildVersion": "0",
         }
 
-        header = {"Content-Type": "application/json"}
+        header = {
+            "Content-Type": "application/json",
+            "User-Agent": "PostmanRuntime/7.28.4",
+            "Host": "gdmf.apple.com",
+            "Accept": "*/*",
+            "Accpet-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+        }
 
-        response = await self.HTTP.post(GDMF_APPLE, data=post_data)
+        conn = TCPConnector(ssl=False)
+        self.HTTP.session = ClientSession(connector=conn)
+
+        response = await self.HTTP.post(GDMF_APPLE, json=post_data, headers=header)
+        text = await response.text()
+
+        await self.HTTP.close_session()
+
+        return self.__decode_gdmf(text)
+
+
+async def test():
+    h = GDMFHandler()
+    d = await h.get_asset(
+        asset_type="SoftwareUpdate",
+        device_type="iOS",
+        version="15",
+        channel="developerbeta",
+        device="iPhone12,1",
+        codename="N104AP",
+    )
+    print(d)
+
+
+if __name__ == "__main__":  # test
+    l = asyncio.get_event_loop()
+
+    l.run_until_complete(test())

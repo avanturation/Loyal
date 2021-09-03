@@ -1,6 +1,7 @@
 import plistlib
+from typing import Any, Optional
 
-from utils.request import Base
+from aiohttp.client import ClientSession
 
 MESU_APPLE = "https://mesu.apple.com/assets"
 ITUNES_SERVER = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/com.apple.jingle.appserver.client.MZITunesClientCheck/version"
@@ -40,6 +41,36 @@ Accesories = [
     "KeyboardCoverFirmware_4",  # Smart Keyboard Folio (11-inch)
     "KeyboardCoverFirmware_5",  # Smart Keyboard Folio (12.9-inch)
 ]
+
+
+class Base:
+    def __init__(self) -> None:
+        self.session: Optional[ClientSession] = None
+
+    async def request(
+        self,
+        url: str,
+        method: str,
+        **kwargs: Any,
+    ):
+        if not self.session or self.session.closed:
+            self.session = ClientSession()
+
+        resp = await self.session.request(method, url, **kwargs)
+
+        return resp
+
+    async def post(self, url: str, **kwargs: Any):
+        if not self.session or self.session.closed:
+            self.session = ClientSession()
+
+        return await self.request(url, "POST", **kwargs)
+
+    async def get(self, url: str, **kwargs: Any):
+        if not self.session or self.session.closed:
+            self.session = ClientSession()
+
+        return await self.request(url, "GET", **kwargs)
 
 
 class LoyalRequest(Base):
