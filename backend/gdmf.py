@@ -1,4 +1,3 @@
-import asyncio
 from base64 import b64decode
 from json import loads
 from typing import Dict, Literal
@@ -7,7 +6,7 @@ from aiohttp import ClientSession, TCPConnector
 
 from request import LoyalRequest
 
-GDMF_APPLE = "https://gdmf.apple.com/v2/assets"
+GDMF_APPLE = "https://gdmf.apple.com/v2/"
 
 ASSET_TYPE = {
     "SoftwareUpdate": "com.apple.MobileAsset.SoftwareUpdate",
@@ -129,7 +128,7 @@ class GDMFHandler:
         channel: str,
         device: str,
         codename: str,
-    ):
+    ) -> Dict:
         post_data = {
             "ClientVersion": "2",
             "AssetType": ASSET_TYPE[asset_type],
@@ -152,28 +151,27 @@ class GDMFHandler:
         conn = TCPConnector(ssl=False)
         self.HTTP.session = ClientSession(connector=conn)
 
-        response = await self.HTTP.post(GDMF_APPLE, json=post_data, headers=header)
+        response = await self.HTTP.post(
+            GDMF_APPLE + "assets", json=post_data, headers=header
+        )
         text = await response.text()
 
         await self.HTTP.close_session()
 
         return self.__decode_gdmf(text)
 
+    async def get_pmv(self):
+        header = {
+            "Content-Type": "application/json",
+            "User-Agent": "PostmanRuntime/7.28.4",
+            "Host": "gdmf.apple.com",
+            "Accept": "*/*",
+            "Accpet-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+        }
 
-async def test():
-    h = GDMFHandler()
-    d = await h.get_asset(
-        asset_type="SoftwareUpdate",
-        device_type="iOS",
-        version="15",
-        channel="developerbeta",
-        device="iPhone12,1",
-        codename="N104AP",
-    )
-    print(d)
+        conn = TCPConnector(ssl=False)
+        self.HTTP.session = ClientSession(connector=conn)
 
-
-if __name__ == "__main__":  # test
-    l = asyncio.get_event_loop()
-
-    l.run_until_complete(test())
+        response = await self.HTTP.get(GDMF_APPLE + "pmv", headers=header)
+        return await response.json()

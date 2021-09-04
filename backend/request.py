@@ -19,6 +19,9 @@ iOSDeveloperXML = "/iOS<version>DeveloperSeed/com_apple_MobileAsset_SoftwareUpda
 iOSPublicXML = "/iOS<version>PublicSeed/com_apple_MobileAsset_SoftwareUpdate/com_apple_MobileAsset_SoftwareUpdate.xml"
 macOSARMXML = "/macos/com_apple_macOSIPSW/com_apple_macOSIPSW.xml"
 bridgeOSXML = "/bridgeos/com_apple_bridgeOSIPSW/com_apple_bridgeOSIPSW.xml"
+AirTagXML = "/com_apple_MobileAsset_MobileAccessoryUpdate_DurianFirmware/com_apple_MobileAsset_MobileAccessoryUpdate_DurianFirmware.xml"
+MagSafeXML = "/com_apple_MobileAsset_UARP_A2140/com_apple_MobileAsset_UARP_A2140.xmls"
+MagSafeDuoXML = "/com_apple_MobileAsset_UARP_A2458/com_apple_MobileAsset_UARP_A2458.xml"
 
 AudioDevices = [
     "A1523",  # AirPods (1st generation)
@@ -84,6 +87,9 @@ class LoyalRequest(Base):
             "iOSPB": iOSPublicXML,
             "macOS": macOSARMXML,
             "T2": bridgeOSXML,
+            "AirTag": AirTagXML,
+            "MagSafe": MagSafeXML,
+            "MagSafeDuo": MagSafeDuoXML,
         }
         super().__init__()
 
