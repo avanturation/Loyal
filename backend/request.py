@@ -20,7 +20,7 @@ iOSPublicXML = "/iOS<version>PublicSeed/com_apple_MobileAsset_SoftwareUpdate/com
 macOSARMXML = "/macos/com_apple_macOSIPSW/com_apple_macOSIPSW.xml"
 bridgeOSXML = "/bridgeos/com_apple_bridgeOSIPSW/com_apple_bridgeOSIPSW.xml"
 AirTagXML = "/com_apple_MobileAsset_MobileAccessoryUpdate_DurianFirmware/com_apple_MobileAsset_MobileAccessoryUpdate_DurianFirmware.xml"
-MagSafeXML = "/com_apple_MobileAsset_UARP_A2140/com_apple_MobileAsset_UARP_A2140.xmls"
+MagSafeXML = "/com_apple_MobileAsset_UARP_A2140/com_apple_MobileAsset_UARP_A2140.xml"
 MagSafeDuoXML = "/com_apple_MobileAsset_UARP_A2458/com_apple_MobileAsset_UARP_A2458.xml"
 
 AudioDevices = [
@@ -83,8 +83,6 @@ class LoyalRequest(Base):
             "tvOS": tvOSXML,
             "iOS": iOSXML,
             "audioOS": AudioOSXML,
-            "iOSDB": iOSDeveloperXML,
-            "iOSPB": iOSPublicXML,
             "macOS": macOSARMXML,
             "T2": bridgeOSXML,
             "AirTag": AirTagXML,
