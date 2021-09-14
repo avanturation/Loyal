@@ -2,7 +2,7 @@
 
 Fast, Simple API for fetching Apple Firmwares.
 
-**The API server is closed due to some reasons. Wait for v2 releases."
+**The API server is closed due to some reasons. Wait for v2 releases.**
 
 ## Features
 
